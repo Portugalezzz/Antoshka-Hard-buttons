@@ -2,8 +2,8 @@
 #include <WiFiUdp.h>
 
 //SSID of your network
-char ssid[] = "hedgehog_2G"; //SSID of your Wi-Fi router
-char pass[] = "7981120158"; //Password of your Wi-Fi router
+char ssid[] = "*****"; //SSID of your Wi-Fi router
+char pass[] = "******"; //Password of your Wi-Fi router
 int keyIndex = 0;
 
 unsigned int localPort = 4000; 
