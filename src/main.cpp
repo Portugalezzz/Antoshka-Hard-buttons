@@ -2,7 +2,7 @@
 #include <WiFiUdp.h>
 
 //SSID of your network
-char ssid[] = "*****"; //SSID of your Wi-Fi router
+char ssid[] = "******"; //SSID of your Wi-Fi router
 char pass[] = "******"; //Password of your Wi-Fi router
 int keyIndex = 0;
 
@@ -20,6 +20,9 @@ const int ledpin = D8;
 int buttonState0 = LOW;
 int buttonState1 = LOW;
 int buttonState2 = LOW;
+char sendIP[] = "192.168.1.2";
+int portNbr = 4001;
+
 
 
 
@@ -30,12 +33,9 @@ void setup()
   pinMode(buttonPin1, INPUT);
   pinMode(buttonPin2, INPUT);
   pinMode(ledpin, OUTPUT);
-  //IPAddress ip(192, 168, 1, 20); 
-  //IPAddress gateway(192, 175, 0, 1); 
-  //IPAddress subnet(255, 255, 255, 0); 
-  //IPAddress DNS(192, 175, 0, 1); 
+
   Serial.begin(9600);
-  //WiFi.config(ip, gateway, subnet, DNS);  
+ 
   delay(100); 
   //WiFi.mode(WIFI_STA); 
   WiFi.begin(ssid, pass); 
@@ -75,90 +75,36 @@ void printWifiStatus() {
   Serial.println(" dBm");
 }
 
-void loop () 
+  void SendButtonNumber(char btnnmbr[])
   {
-    /*
-  int packetSize = Udp.parsePacket();
-  if (packetSize) {
-    Serial.print("Received packet of size ");
-    Serial.println(packetSize);
-    Serial.print("From ");
-    IPAddress remoteIp = Udp.remoteIP();
-    Serial.print(remoteIp);
-    Serial.print(", port ");
-    Serial.println(Udp.remotePort());
-
-    // read the packet into packetBufffer
-    int len = Udp.read(packetBuffer, 255);
-    if (len > 0) {
-      packetBuffer[len] = 0;
-    }
-    Serial.println("Contents:");
-    Serial.println(packetBuffer);
-
-    String str(packetBuffer);
-
-    if(str == "hello from unity"){
-      digitalWrite(ledpin, HIGH); 
-    }
-
-
-     buttonState = digitalRead(buttonPin0);
-     if(buttonState == HIGH){
-      String str1 = "Button1 pressed"; 
-      str1.toCharArray(ReplyBuffer, 50); 
-     }
-     else{
-      String str1 = "Button1 off"; 
-      str1.toCharArray(ReplyBuffer, 50);
-     }
-
-     Serial.println(ReplyBuffer);
-      Serial.println(Udp.remoteIP());
-      Serial.println(Udp.remotePort());
-
-
-    // send a reply, to the IP address and port that sent the packet
-    Udp.beginPacket("192.168.1.2", 4001);
-    Udp.write(ReplyBuffer);
+    Udp.beginPacket(sendIP, portNbr);
+    Udp.write(btnnmbr);
     Udp.endPacket();
+    Serial.print("Send ");
+    Serial.print(btnnmbr);
+    delay(5000);
   }
 
-  else{
-      digitalWrite(ledpin, LOW);   
-    }
-    delay(10);
-*/
+void loop () 
+  {
+   
   buttonState0 = digitalRead(buttonPin0);
   buttonState1 = digitalRead(buttonPin1);
   buttonState2 = digitalRead(buttonPin2);
+
   
   if(buttonState0 == HIGH)
     {
-    Udp.beginPacket("192.168.1.2", 4001);
-    Udp.write("0");
-    Udp.endPacket();
-    Serial.print("Send 0");
-    delay(5000);
-    
+      SendButtonNumber("0");
     }
-      
+    
   if(buttonState1 == HIGH)
     {
-    Udp.beginPacket("192.168.1.2", 4001);
-    Udp.write("1");
-    Udp.endPacket();
-    Serial.print("Send 1");
-    delay(5000);
-    } 
-    
+      SendButtonNumber("1");
+    }
   if(buttonState2 == HIGH)
     {
-    Udp.beginPacket("192.168.1.2", 4001);
-    Udp.write("2");
-    Udp.endPacket();
-    Serial.print("Send 2");
-    delay(5000);
+      SendButtonNumber("2");
     }
 
   if (WiFi.status())
@@ -174,75 +120,3 @@ void loop ()
 
 
 
-/*
-if (packetSize) {
-    Serial.print("Received packet of size ");
-    Serial.println(packetSize);
-    Serial.print("From ");
-    IPAddress remoteIp = Udp.remoteIP();
-    Serial.print(remoteIp);
-    Serial.print(", port ");
-    Serial.println(Udp.remotePort());
-
-    // read the packet into packetBufffer
-    int len = Udp.read(packetBuffer, 255);
-    if (len > 0) {
-      packetBuffer[len] = 0;
-    }
-    Serial.println("Contents:");
-    Serial.println(packetBuffer);
-
-    String str(packetBuffer);
-
-    if(str == "hello from unity"){
-      digitalWrite(ledpin, HIGH); 
-    }
-
-
-     buttonState = digitalRead(buttonPin0);
-     if(buttonState == HIGH){
-      String str1 = "Button1 pressed"; 
-      str1.toCharArray(ReplyBuffer, 50); 
-     }
-     else{
-      String str1 = "Button1 off"; 
-      str1.toCharArray(ReplyBuffer, 50);
-     }
-
-     Serial.println(ReplyBuffer);
-      Serial.println(Udp.remoteIP());
-      Serial.println(Udp.remotePort());
-
-
-    // send a reply, to the IP address and port that sent the packet
-    Udp.beginPacket(Udp.remoteIP(), 4001);
-    Udp.write(ReplyBuffer);
-    Udp.endPacket();
-  }
-
-  else{
-      digitalWrite(ledpin, LOW);   
-    }
-    delay(10);
-*/
-
-/*
-  buttonState = digitalRead(buttonPin0);
-  if(buttonState == HIGH)
-    {
-    String str1 = "Button1 pressed"; 
-    str1.toCharArray(ReplyBuffer, 50); 
-
-    //Udp.beginPacket("192.168.1.2", 4001);
-    //Udp.write(ReplyBuffer);
-    //Udp.write("3");
-   // Udp.endPacket();
-    delay(5000);
-    }
-
-  if (WiFi.status())
-    {
-      digitalWrite(ledpin, HIGH); 
-    }
-  else digitalWrite(ledpin, LOW); 
-  */
